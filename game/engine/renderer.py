@@ -33,18 +33,18 @@ from .agent import Agent, Direction
 
 class Colors:
     # Base colors
-    BLACK = (0, 0, 0)
+    BLACK = (25, 25, 35)
     WHITE = (255, 255, 255)
-    GRAY = (128, 128, 128)
-    LIGHT_GRAY = (200, 200, 200)
-    DARK_GRAY = (64, 64, 64)
+    GRAY = (140, 140, 160)
+    LIGHT_GRAY = (220, 220, 240)
+    DARK_GRAY = (80, 80, 100)
     
     # Tile colors
-    EMPTY = (240, 240, 240)
-    WALL = (40, 40, 40)
-    START = (100, 255, 100)
-    GOAL = (255, 100, 100)
-    AGENT = (0, 0, 255)
+    EMPTY = (245, 245, 255)
+    WALL = (45, 45, 65)
+    START = (130, 255, 170)
+    GOAL = (255, 130, 170)
+    AGENT = (80, 140, 255)
     
     # Weight colors
     ROAD = (200, 200, 200)      # cost 1
@@ -52,14 +52,14 @@ class Colors:
     SWAMP = (100, 150, 100)     # cost 5
     
     # Algorithm visualization
-    FRONTIER = (255, 255, 0, 128)    # yellow with alpha
-    VISITED = (0, 255, 0, 128)       # green with alpha
-    PATH = (255, 0, 255, 128)        # magenta with alpha
+    FRONTIER = (255, 220, 100, 160)    # warm yellow with alpha
+    VISITED = (130, 255, 170, 160)     # soft green with alpha
+    PATH = (255, 130, 220, 160)       # soft pink with alpha
     
     # UI
-    EDITOR_BG = (28, 28, 36)
-    TEXT = (220, 220, 220)
-    TEXT_HIGHLIGHT = (255, 255, 100)
+    EDITOR_BG = (35, 35, 45)
+    TEXT = (230, 230, 250)
+    TEXT_HIGHLIGHT = (130, 210, 255)
 
 class Renderer:
     def __init__(self, screen: pg.Surface, tile_size: int = 32):

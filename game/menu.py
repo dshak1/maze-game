@@ -13,8 +13,8 @@ from leaderboard import leaderboard
 
 class MenuButton:
     def __init__(self, rect: pg.Rect, text: str, action: callable, 
-                 bg_color: Tuple[int, int, int] = (40, 40, 50),
-                 hover_color: Tuple[int, int, int] = (60, 60, 70)):
+                 bg_color: Tuple[int, int, int] = (60, 65, 85),
+                 hover_color: Tuple[int, int, int] = (80, 85, 115)):
         self.rect = rect
         self.text = text
         self.action = action
@@ -35,7 +35,7 @@ class MenuButton:
         
         # Draw border (thicker when hovered)
         border_thickness = 3 if self.is_hovered else 2
-        border_color = (100, 100, 255) if self.is_hovered else (70, 70, 100)
+        border_color = (130, 170, 255) if self.is_hovered else (90, 100, 140)
         pg.draw.rect(screen, border_color, self.rect, border_thickness, border_radius=8)
         
         # Draw text with shadow effect
@@ -118,8 +118,8 @@ class TextInput:
 class MenuSystem:
     def __init__(self, screen: pg.Surface):
         self.screen = screen
-        self.font = pg.font.Font(None, 32)
-        self.small_font = pg.font.Font(None, 24)
+        self.font = pg.font.Font(None, 36)  # Increased from 32
+        self.small_font = pg.font.Font(None, 28)  # Increased from 24
         self.current_menu = "home"  # "home" or "level_select"
         
         # Load levels first
@@ -135,8 +135,8 @@ class MenuSystem:
         )
         
         # Menu buttons
-        button_width = 200
-        button_height = 50
+        button_width = 300  # Increased from 200
+        button_height = 60   # Increased from 50
         button_y = 300
         
         self.start_button = MenuButton(
@@ -156,16 +156,16 @@ class MenuSystem:
         for i, level in enumerate(self.levels):
             print(f"Creating button for level {i+1}: {level.name}")
             # Center buttons vertically in the screen
-            total_height = len(self.levels) * 70  # 70 pixels per button
+            total_height = len(self.levels) * 80  # Increased from 70 to 80 pixels per button
             start_y = (screen.get_height() - total_height) // 2
-            y_pos = start_y + i*70
+            y_pos = start_y + i*80
             
             def make_action(lvl):
                 return lambda: self.select_level(lvl)
             
             button = MenuButton(
                 pg.Rect(screen_center_x - button_width//2, y_pos, button_width, button_height),
-                f"Level {i+1}: {level.name}",
+                level.name,
                 make_action(level)
             )
             self.level_buttons.append(button)
@@ -285,6 +285,6 @@ class MenuSystem:
                     button.draw(self.screen, self.font)
                     # Draw level description below button if hovered
                     if button.is_hovered and i < len(self.levels):
-                        desc = self.small_font.render(self.levels[i].description, True, Colors.TEXT)
+                        desc = self.small_font.render(self.levels[i].description, True, Colors.TEXT_HIGHLIGHT)
                         desc_rect = desc.get_rect(midtop=(button.rect.centerx, button.rect.bottom + 5))
                         self.screen.blit(desc, desc_rect)
