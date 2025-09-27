@@ -61,11 +61,8 @@ class TextEditor:
         Handle pygame events. Returns True if event was consumed
         """
         if event.type == pg.KEYDOWN:
-            # Check for modifier keys
-            mods = pg.key.get_pressed()
-            
             # Let Ctrl+ combinations pass through to main game (except for future editor shortcuts)
-            if mods[pg.K_LCTRL] or mods[pg.K_RCTRL]:
+            if event.mod & pg.KMOD_CTRL:
                 # For now, let all Ctrl+ combinations pass through
                 # In the future, we can handle Ctrl+C, Ctrl+V, etc. here
                 return False  # Don't consume Ctrl+ events

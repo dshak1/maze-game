@@ -12,8 +12,8 @@ from engine.pathfinder import calculate_optimal_steps, get_efficiency_rating
 
 # Constants from the plan
 W, H = 1100, 720
-GRID_W = 25     # cols
-GRID_H = 18     # rows  
+GRID_W = 20     # cols (reduced from 25 to fit)
+GRID_H = 15     # rows (reduced from 18 to fit)
 TILE = 32
 EDITOR_W = 420  # left panel
 
@@ -89,6 +89,7 @@ forward(8)
     execution_output = ""
     last_execution_time = 0
     execution_cooldown = 500  # milliseconds to prevent rapid re-execution
+    show_victory_screen = False  # New flag for victory display
     
     # Performance stats
     stats = {
@@ -119,7 +120,7 @@ forward(8)
                 if event.key == pg.K_ESCAPE:
                     print("ESC pressed - exiting")
                     running = False
-                elif event.key == pg.K_RETURN and pg.key.get_pressed()[pg.K_LCTRL]:
+                elif event.key == pg.K_RETURN and (event.mod & pg.KMOD_CTRL):
                     # Ctrl+Enter - Run code (with cooldown to prevent rapid execution)
                     current_time = pg.time.get_ticks()
                     if current_time - last_execution_time > execution_cooldown:
@@ -132,6 +133,7 @@ forward(8)
                             
                             if agent.at_goal():
                                 extra_steps = steps_taken - optimal_steps
+                                show_victory_screen = True  # Show big score display
                                 if extra_steps == 0:
                                     execution_output = f"� PERFECT! Optimal solution in {steps_taken} steps!"
                                 else:
@@ -150,7 +152,7 @@ forward(8)
                         last_execution_time = current_time
                     else:
                         print(f"Too soon! Wait {(execution_cooldown - (current_time - last_execution_time))/1000:.1f}s before next execution")
-                elif event.key == pg.K_r and pg.key.get_pressed()[pg.K_LCTRL]:
+                elif event.key == pg.K_r and (event.mod & pg.KMOD_CTRL):
                     # Ctrl+R - Reset level
                     agent.reset()
                     grid.reset_pathfinding()
@@ -158,6 +160,7 @@ forward(8)
                     execution_output = "Level reset!"
                     stats["Steps Taken"] = 0
                     stats["Efficiency"] = "Ready"
+                    show_victory_screen = False  # Hide victory screen on reset
                 elif event.key == pg.K_d:
                     # Toggle distance display
                     show_distances = not show_distances
@@ -174,9 +177,13 @@ forward(8)
                     stats["Optimal Steps"] = optimal_steps
                     stats["Efficiency"] = "Ready"
                     execution_output = f"New maze! Optimal solution: {optimal_steps} steps"
+                    show_victory_screen = False  # Hide victory screen on new maze
                 elif event.key == pg.K_SPACE:
-                    # Manual step forward for testing
-                    agent.forward(1)
+                    # Manual step forward for testing, or dismiss victory screen
+                    if show_victory_screen:
+                        show_victory_screen = False  # Dismiss victory screen
+                    else:
+                        agent.forward(1)
         
         # --- UPDATE ---
         # Update text editor cursor animation
@@ -278,6 +285,10 @@ forward(8)
                     text_surface = renderer.small_font.render(line, True, Colors.TEXT_HIGHLIGHT)
                     screen.blit(text_surface, (20, y_offset))
                     y_offset += 16
+        
+        # Draw victory screen if goal is reached
+        if show_victory_screen:
+            renderer.draw_victory_screen(stats["Steps Taken"], optimal_steps)
         
         pg.display.flip()
         

@@ -73,6 +73,10 @@ class Renderer:
                 rect = pg.Rect(x, y, self.tile_size, self.tile_size)
                 pg.draw.rect(self.screen, color, rect)
                 pg.draw.rect(self.screen, Colors.BLACK, rect, 1)
+                
+                # Draw treasure chest on goal tile
+                if tile.type == TileType.GOAL:
+                    self.draw_treasure_chest(x, y)
     
     def draw_agent(self, agent: Agent, offset_x: int = 0, offset_y: int = 0):
         """Draw the agent with direction indicator"""
@@ -90,6 +94,33 @@ class Renderer:
         arrow_text = self.font.render(agent.get_direction_symbol(), True, Colors.WHITE)
         arrow_rect = arrow_text.get_rect(center=(center_x, center_y))
         self.screen.blit(arrow_text, arrow_rect)
+    
+    def draw_treasure_chest(self, x: int, y: int):
+        """Draw a treasure chest symbol on the goal tile"""
+        center_x = x + self.tile_size // 2
+        center_y = y + self.tile_size // 2
+        size = self.tile_size // 3
+        
+        # Draw chest base (brown rectangle)
+        chest_color = (139, 69, 19)  # Brown
+        gold_color = (255, 215, 0)   # Gold
+        
+        # Main chest body
+        chest_rect = pg.Rect(center_x - size, center_y - size//2, size * 2, size)
+        pg.draw.rect(self.screen, chest_color, chest_rect)
+        pg.draw.rect(self.screen, Colors.BLACK, chest_rect, 2)
+        
+        # Chest lid
+        lid_rect = pg.Rect(center_x - size, center_y - size//2 - 4, size * 2, 8)
+        pg.draw.rect(self.screen, chest_color, lid_rect)
+        pg.draw.rect(self.screen, Colors.BLACK, lid_rect, 2)
+        
+        # Golden treasure symbol in center
+        treasure_text = self.small_font.render("💎", True, gold_color)
+        if treasure_text.get_width() == 0:  # Fallback if emoji not supported
+            treasure_text = self.small_font.render("$", True, gold_color)
+        treasure_rect = treasure_text.get_rect(center=(center_x, center_y))
+        self.screen.blit(treasure_text, treasure_rect)
     
     def draw_pathfinding_overlay(self, grid: Grid, offset_x: int = 0, offset_y: int = 0, 
                                 show_distances: bool = False, show_visited: bool = True):
@@ -192,3 +223,67 @@ class Renderer:
             text_surface = self.small_font.render(text, True, color)
             self.screen.blit(text_surface, (rect.x + 10, y_offset))
             y_offset += 18
+    
+    def draw_victory_screen(self, steps_taken: int, optimal_steps: int):
+        """Draw a big victory message with score in the center of the screen"""
+        screen_rect = self.screen.get_rect()
+        
+        # Semi-transparent overlay
+        overlay = pg.Surface(self.screen.get_size(), pg.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))  # Black with transparency
+        self.screen.blit(overlay, (0, 0))
+        
+        # Create large font for the score
+        try:
+            big_font = pg.font.Font(None, 72)
+            medium_font = pg.font.Font(None, 48)
+            small_font = pg.font.Font(None, 36)
+        except:
+            big_font = self.font
+            medium_font = self.font
+            small_font = self.font
+        
+        # Victory message
+        victory_text = big_font.render("🏆 TREASURE FOUND! 🏆", True, Colors.TEXT_HIGHLIGHT)
+        victory_rect = victory_text.get_rect(center=(screen_rect.centerx, screen_rect.centery - 120))
+        self.screen.blit(victory_text, victory_rect)
+        
+        # Main score display
+        score_text = f"SCORE: {steps_taken} STEPS"
+        score_surface = medium_font.render(score_text, True, (255, 255, 255))
+        score_rect = score_surface.get_rect(center=(screen_rect.centerx, screen_rect.centery - 40))
+        
+        # Add a border/glow effect to the score
+        border_surface = medium_font.render(score_text, True, (255, 215, 0))  # Gold border
+        for dx in [-2, -1, 0, 1, 2]:
+            for dy in [-2, -1, 0, 1, 2]:
+                if dx != 0 or dy != 0:
+                    border_rect = score_surface.get_rect(center=(screen_rect.centerx + dx, screen_rect.centery - 40 + dy))
+                    self.screen.blit(border_surface, border_rect)
+        
+        self.screen.blit(score_surface, score_rect)
+        
+        # Performance comparison
+        extra_steps = steps_taken - optimal_steps
+        if extra_steps == 0:
+            perf_text = "PERFECT! Optimal solution!"
+            perf_color = (0, 255, 0)  # Green
+        elif extra_steps <= 5:
+            perf_text = f"Excellent! Only {extra_steps} extra steps"
+            perf_color = (150, 255, 150)  # Light green
+        elif extra_steps <= 10:
+            perf_text = f"Good! {extra_steps} extra steps"
+            perf_color = (255, 255, 0)  # Yellow
+        else:
+            perf_text = f"{extra_steps} extra steps (optimal: {optimal_steps})"
+            perf_color = (255, 150, 150)  # Light red
+        
+        perf_surface = small_font.render(perf_text, True, perf_color)
+        perf_rect = perf_surface.get_rect(center=(screen_rect.centerx, screen_rect.centery + 20))
+        self.screen.blit(perf_surface, perf_rect)
+        
+        # Instructions
+        instruction_text = "Press SPACE to continue or N for new maze"
+        instruction_surface = self.small_font.render(instruction_text, True, Colors.TEXT)
+        instruction_rect = instruction_surface.get_rect(center=(screen_rect.centerx, screen_rect.centery + 80))
+        self.screen.blit(instruction_surface, instruction_rect)

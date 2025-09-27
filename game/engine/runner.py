@@ -42,6 +42,7 @@ class SafeCodeRunner:
             "right": self._safe_right,
             "scan": self._safe_scan,
             "at_goal": self._safe_at_goal,
+            "get_position": self._safe_get_position,
         }
     
     def _check_operation_limit(self):
@@ -85,6 +86,13 @@ class SafeCodeRunner:
         self._check_operation_limit()
         result = self.agent.at_goal()
         # Don't log every at_goal call - too verbose
+        return result
+    
+    def _safe_get_position(self) -> tuple:
+        """Safe wrapper for agent.get_position()"""
+        self._check_operation_limit()
+        result = self.agent.get_position()
+        # Don't log every get_position call - too verbose
         return result
     
     def validate_code(self, code: str) -> tuple[bool, str]:
