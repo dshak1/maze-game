@@ -40,8 +40,13 @@ from engine.renderer import Renderer, Colors
 from engine.runner import SafeCodeRunner
 from engine.editor import TextEditor
 from engine.pathfinder import calculate_optimal_steps, get_efficiency_rating
+from menu import MenuSystem, MenuButton
 
-# Constants from the plan
+# Game states
+STATE_MENU = 'menu'
+STATE_GAME = 'game'
+
+# Constants
 W, H = 1100, 720
 GRID_W = 20     # cols (reduced from 25 to fit)
 GRID_H = 15     # rows (reduced from 18 to fit)
@@ -55,7 +60,13 @@ def main():
         screen = pg.display.set_mode((W, H))
         pg.display.set_caption("Maze Game - Algorithm Learning Platform")
         clock = pg.time.Clock()
-        print("Pygame initialized successfully!")
+        
+        # Initialize menu system
+        menu = MenuSystem(screen)
+        game_state = STATE_MENU
+        current_level = None
+        
+        print("Pygame and menu system initialized successfully!")
     except Exception as e:
         print(f"Error initializing pygame: {e}")
         return
@@ -138,8 +149,67 @@ forward(8)
         frame_count += 1
         dt = clock.tick(60) / 1000  # seconds
         
+        # Create back button if it doesn't exist
+        if not 'back_btn' in locals():
+            back_btn = MenuButton(
+                pg.Rect(10, 10, 100, 30),
+                "← Back",
+                lambda: None,
+                bg_color=(40, 40, 50),
+                hover_color=(60, 60, 70)
+            )
+
+        if game_state == STATE_MENU:
+            # Handle menu state
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    running = False
+                elif event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+                    running = False
+                else:
+                    # Handle menu events
+                    selected_level = menu.handle_event(event)
+                    if selected_level:
+                        # Initialize game with selected level
+                        current_level = selected_level
+                        try:
+                            grid = Grid(GRID_H, GRID_W)
+                            agent = Agent(grid)
+                            current_level.setup_level(grid, agent)
+                            renderer = Renderer(screen, TILE)
+                            code_runner = SafeCodeRunner(agent)
+                            
+                            # Initialize text editor with level's starter code
+                            font = pg.font.Font(None, 20)
+                            editor_rect = pg.Rect(10, 50, EDITOR_W - 20, H - 200)
+                            text_editor = TextEditor(editor_rect, font)
+                            text_editor.set_text(current_level.get_starter_code())
+                            
+                            # Calculate optimal solution
+                            optimal_steps = calculate_optimal_steps(grid)
+                            game_state = STATE_GAME
+                            print(f"Starting level: {current_level.name}")
+                        except Exception as e:
+                            print(f"Error initializing level: {e}")
+            
+            # Update and draw menu
+            menu.update(dt)
+            menu.draw()
+            pg.display.flip()
+            continue  # Skip to next frame
+            
+        # Game state handling
+        
         # Handle events
         for event in pg.event.get():
+            # Check for back button click in game state
+            if game_state == STATE_GAME:
+                back_btn.is_hovered = back_btn.rect.collidepoint(pg.mouse.get_pos())
+                if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                    if back_btn.rect.collidepoint(event.pos):
+                        game_state = STATE_MENU
+                        continue
+
             # Let text editor handle events first
             if text_editor.handle_event(event):
                 continue  # Event was consumed by editor
@@ -270,6 +340,10 @@ forward(8)
         # Draw game view
         game_offset_x = EDITOR_W + 20
         game_offset_y = 50
+
+        # Draw back button in game state
+        if game_state == STATE_GAME:
+            back_btn.draw(screen, renderer.small_font)
         
         # Calculate available space for grid
         available_width = W - game_offset_x - 20
