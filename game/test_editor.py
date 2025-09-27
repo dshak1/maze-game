@@ -1,5 +1,19 @@
 """
-Test script to verify text editor functionality
+Text Editor Tests
+---------------
+
+Verification suite for the text editor component. Tests basic
+functionality and user interactions.
+
+Tests:
+- Basic typing and cursor movement
+- Special key handling (arrows, backspace, etc)
+- Syntax highlighting
+- Copy/paste operations
+- Multi-line editing
+
+Run this file directly to execute tests:
+    python test_editor.py
 """
 import pygame as pg
 import sys

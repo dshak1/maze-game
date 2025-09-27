@@ -1,5 +1,32 @@
 """
-Grid system for the maze game - handles tiles, walls, weights, and pathfinding
+Grid System
+----------
+
+Core maze representation and pathfinding infrastructure.
+Manages the game world's structure including walls, weights,
+and special tiles.
+
+Features:
+- Flexible grid size
+- Multiple tile types (empty, wall, weighted, start, goal)
+- Pathfinding support with neighbor calculation
+- Cost-based movement
+- Start/goal position management
+- Simple maze generation
+
+Usage:
+    from engine.grid import Grid, TileType
+
+    # Create a new grid
+    grid = Grid(rows=10, cols=15)
+    
+    # Set up maze elements
+    grid.set_start(0, 0)
+    grid.set_goal(9, 14)
+    grid.set_tile(5, 5, TileType.WALL)
+
+    # Get neighbors for pathfinding
+    neighbors = grid.neighbors((0, 0))
 """
 from enum import Enum
 from typing import List, Tuple, Dict, Optional

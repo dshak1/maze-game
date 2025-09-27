@@ -1,5 +1,38 @@
 """
-Text Editor Widget for Pygame - handles text input, cursor, selection, etc.
+Text Editor Widget
+----------------
+
+A full-featured text editor implementation in Pygame for code editing.
+Provides syntax highlighting and modern text editing capabilities.
+
+Features:
+- Multi-line text editing
+- Cursor movement and selection
+- Syntax highlighting for Python
+- Line numbers
+- Auto-indentation
+- Copy/paste support
+- Scrolling for long content
+- Custom color schemes
+
+Usage:
+    from engine.editor import TextEditor
+    import pygame
+
+    # Create editor
+    font = pygame.font.Font(None, 20)
+    editor = TextEditor(rect=pygame.Rect(10, 10, 400, 300), font=font)
+
+    # Set initial content
+    editor.set_text('# Write your code here\n')
+
+    # In game loop:
+    for event in pygame.event.get():
+        if editor.handle_event(event):
+            continue  # Event was handled by editor
+
+    editor.update(dt)
+    editor.draw(screen)
 """
 import pygame as pg
 from typing import List, Tuple, Optional

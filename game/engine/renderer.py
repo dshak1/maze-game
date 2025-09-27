@@ -1,5 +1,30 @@
 """
-Renderer - handles all drawing operations for the game
+Renderer System
+--------------
+
+Handles all visual aspects of the game including grid rendering,
+agent visualization, UI elements, and algorithm visualization.
+
+Features:
+- Grid visualization with different tile types
+- Agent rendering with direction indicator
+- Pathfinding visualization (visited cells, distances)
+- Path drawing for solution display
+- Code editor panel rendering
+- Statistics panel
+- Color schemes for different game elements
+
+Usage:
+    from engine.renderer import Renderer, Colors
+    
+    screen = pygame.display.set_mode((800, 600))
+    renderer = Renderer(screen, tile_size=32)
+
+    # Draw game elements
+    renderer.draw_grid(grid)
+    renderer.draw_agent(agent)
+    renderer.draw_pathfinding_overlay(grid)
+    renderer.draw_stats_panel(stats_rect, stats)
 """
 import pygame as pg
 from typing import Dict, Optional, Tuple

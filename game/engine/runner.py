@@ -1,5 +1,35 @@
 """
-Safe code execution sandbox for user-provided code
+Safe Code Runner
+---------------
+
+Provides a secure sandbox for executing user-provided code with
+restricted access to the game's API. Prevents malicious code
+execution while allowing game commands.
+
+Features:
+- AST-based code validation
+- Restricted API access
+- Operation counting to prevent infinite loops
+- Safe wrappers for game commands
+- Execution step tracking
+- Error handling and reporting
+
+Usage:
+    from engine.runner import SafeCodeRunner
+    from engine.agent import Agent
+
+    agent = Agent(grid)
+    runner = SafeCodeRunner(agent)
+
+    # Run user code safely
+    code = '''
+    while not at_goal():
+        if scan() == 'WALL':
+            right()
+        else:
+            forward(1)
+    '''
+    success, error, steps = runner.execute_code(code)
 """
 import ast
 from typing import Dict, Any, List

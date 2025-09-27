@@ -1,5 +1,37 @@
 """
-Agent system - handles player movement, collision, and state
+Agent System
+-----------
+
+Manages the player-controlled entity in the maze, including
+movement, direction, collision detection, and state tracking.
+
+Features:
+- 4-directional movement (North, East, South, West)
+- Movement history tracking
+- Collision detection with walls
+- Forward scanning
+- Goal detection
+- Position and direction management
+
+Usage:
+    from engine.agent import Agent
+    from engine.grid import Grid
+
+    grid = Grid(10, 10)
+    agent = Agent(grid, start_row=0, start_col=0)
+
+    # Move the agent
+    agent.forward(2)
+    agent.right()
+    agent.forward(1)
+
+    # Check surroundings
+    if agent.scan() == 'WALL':
+        agent.left()
+
+    # Check for completion
+    if agent.at_goal():
+        print('Level complete!')
 """
 from enum import Enum
 from typing import Tuple, Optional
