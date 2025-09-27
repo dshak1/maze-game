@@ -1,3 +1,34 @@
+"""
+Leaderboard System
+-----------------
+
+Handles score tracking and persistence for the maze game.
+Maintains separate leaderboards for each level and supports
+multiple users.
+
+Features:
+- Per-level leaderboards
+- Top 10 scores per level
+- Username management
+- Score persistence using JSON files
+- Best score tracking per user
+
+Usage:
+    from game.leaderboard import leaderboard
+
+    # Set the current player's username
+    leaderboard.username = "player1"
+
+    # Add a score for level 1
+    leaderboard.add_score(level=1, score=100)
+
+    # Get all scores for level 1
+    scores = leaderboard.get_scores(level=1)
+
+    # Get player's best score
+    best = leaderboard.get_user_best_score(level=1)
+"""
+
 import json
 import os
 from pathlib import Path

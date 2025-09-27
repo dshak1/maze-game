@@ -1,5 +1,36 @@
 """
-Main game loop - demonstrates split-screen editor and game view
+Main Game - Maze Algorithm Learning Platform
+-----------------------------------------
+
+This is the main entry point of the maze game. The game is designed to teach
+algorithmic thinking through maze-solving challenges.
+
+Features:
+- Split-screen interface with code editor and maze visualization
+- Real-time code execution
+- Visual feedback for algorithm performance
+- Multiple levels with increasing complexity
+- Leaderboard system for tracking performance
+
+Controls:
+- Ctrl+Enter: Execute code
+- Ctrl+R: Reset level
+- Space: Manual step forward
+- D: Toggle distance display
+- V: Toggle visited cells
+- N: Generate new maze
+- ESC: Exit game
+
+Available Commands in Code:
+- forward(n): Move n steps forward
+- left(): Turn left 90 degrees
+- right(): Turn right 90 degrees
+- scan(): Check what's ahead
+- at_goal(): Check if at goal position
+
+Dependencies:
+- Pygame: For graphics and user interface
+- Python standard library
 """
 import pygame as pg
 import sys
