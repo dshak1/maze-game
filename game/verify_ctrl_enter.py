@@ -12,7 +12,7 @@ from engine.editor import TextEditor
 from engine.pathfinder import calculate_optimal_steps
 
 def quick_test():
-    print("🧪 QUICK CTRL+ENTER VERIFICATION")
+    print("QUICK CTRL+ENTER VERIFICATION")
     print("=" * 40)
     
     # Initialize pygame (minimal setup)
@@ -70,12 +70,12 @@ def quick_test():
                         success, error_msg, steps = code_runner.execute_code(code_text)
                         
                         if success:
-                            print(f"✅ Success! Agent moved to {agent.get_position()}")
-                            print(f"📊 Steps taken: {agent.total_steps}")
+                            print(f"Success! Agent moved to {agent.get_position()}")
+                            print(f"Steps taken: {agent.total_steps}")
                             if agent.at_goal():
-                                print("🏆 GOAL REACHED!")
+                                print("GOAL REACHED!")
                         else:
-                            print(f"❌ Error: {error_msg}")
+                            print(f"Error: {error_msg}")
                         
                         last_execution_time = current_time
                         print("-" * 30)
@@ -84,7 +84,7 @@ def quick_test():
                     agent.reset()
                     grid.reset_pathfinding()
                     code_runner.reset()
-                    print("🔄 Reset - try again!")
+                    print("Reset - try again!")
         
         # Update
         text_editor.update(dt)
@@ -110,7 +110,7 @@ def quick_test():
         # Instructions
         font_small = pg.font.Font(None, 20)
         instructions = [
-            "✅ FIXED: Using event.mod for Ctrl detection",
+            " FIXED: Using event.mod for Ctrl detection",
             "Press Ctrl+Enter to execute code",
             "Press R to reset, ESC to exit",
             f"Agent: {agent.get_position()}, Steps: {agent.total_steps}"
@@ -130,15 +130,15 @@ def quick_test():
     print(f"\n🏁 Verification Results:")
     print(f"Total executions: {execution_count}")
     if execution_count > 0:
-        print("✅ SUCCESS! Ctrl+Enter is working perfectly!")
-        print("🎉 The main game should now respond to Ctrl+Enter properly!")
+        print("SUCCESS! Ctrl+Enter is working perfectly!")
+        print("The main game should now respond to Ctrl+Enter properly!")
     else:
-        print("❌ No executions detected - please try pressing Ctrl+Enter in the window")
+        print(" No executions detected - please try pressing Ctrl+Enter in the window")
 
 if __name__ == "__main__":
     try:
         quick_test()
     except Exception as e:
-        print(f"❌ Test failed: {e}")
+        print(f" Test failed: {e}")
         import traceback
         traceback.print_exc()
